@@ -9,53 +9,33 @@
 \usepackage{url}   % 网页链接
 \usepackage{subcaption} % 子标题
 \title{全国大学生数学建模竞赛编写的 \LaTeX{} 模板}
-\tihao{A}
-\baominghao{4321}
-\schoolname{XX大学}
-\membera{ }
-\memberb{ }
-\memberc{ }
+\tihao{C}
+\baominghao{202006010326}
+\schoolname{大连理工大学}
+\membera{}
+\memberb{}
+\memberc{}
 \supervisor{ }
 \yearinput{2020}
-\monthinput{08}
-\dayinput{22}
+\monthinput{09}
+\dayinput{13}
 
 \begin{document}
 
  \maketitle
  \begin{abstract}
-cumcmthesis 是为全国大学生数学建模竞赛编写的\LaTeX{}模板, 旨在让大家专注于 论文的内容写作, 而不用花费过多精力在格式的定制和调整上. 本手册是相应的参考, 其 中提供了一些环境和命令可以让模板的使用更为方便. 同时需要注意, 使用者需要有一 定的 \LaTeX{} 的使用经验, 至少要会使用常用宏包的一些功能, 比如参考文献，数学公式，图片使用，列表环境等等. 例子文件参看 \texttt{example.tex}.
+    本文根据中小微企业票据信息建立全连接神经网络模型预测企业违约率，完成信贷风险的量化分析，然后建立最优化模型分别求出每个企业的贷款额度和年利率，最后通过层次分析法模型完成企业实力的量化分析，对突发因素下的信贷策略进行修正。
+    
+    针对问题一，要求对信贷风险进行量化分析并给出银行的信贷策略。我们首先对附件一的发票数据进行了预处理，提取出1200000个8x5的特征矩阵并附上是否违约的标签，作为全连接网络的输入数据实现二分类模型，附件一中的27个违约企业我们成功预测了其中13个。对于信贷策略的制定实际上是确定每一个企业的信贷额度和年利率，首先根据信贷风险按比例划分银行的信贷总额求出每一个企业的信贷额度，然后确定年利率的优化目标是使银行年收益更大和客户流失更少，据此我们根据企业的信誉等级求得该等级下的基准年利率，然后按照企业违约率进行修正从而得到最终的年利率。
+    
+    针对问题二，我们运用问题一中的数据预处理方式和全连接网络模型得到每一个企业的预测违约率，然后根据附件一中的信誉等级与违约率的关系建立模型，从而确定附件二302家企业的信誉等级，最后按照与问题一相同的方法制定信贷策略。
+    
+    针对问题三，要求我们对突发因素下的信贷策略进行调整，实际上只需对之前模型的违约率进行人工微调即可。首先根据突发因素的影响行业确定违约率的修正方向，然后根据所处行业，票据信息的统计量，企业信贷风险建立基于层次分析法的企业实力量化模型，接着根据企业实力和突发因素的剧烈程度确定违约率的修正范围，最后按照与问题二相同的方法制定信贷策略。
+    
+    本文针对数据预处理时的数据分布不均衡和数值超过程序处理范围的问题，创新性地提出了重采样和归一化的方法，并运用全连接神经网络去挖掘票据信息中的隐藏特征，避免了人工分析的繁琐和精度低问题。本文针对违约率的二分类预测模型通过推广更有现实意义。
+    
 
-\begin{mdframed} [%
-	roundcorner=5pt,
-	linecolor=gray!50,
-	outerlinewidth=0.5pt,
-	middlelinewidth=0.3pt, backgroundcolor=gray!2,
-innertopmargin=\topskip, frametitle={2020 年建模比赛格式变化说明},
-frametitlefont= \bfseries,frametitlerule=true,frametitlealignment =\raggedright\noindent,
-frametitlerulewidth=.5pt, frametitlebackgroundcolor=gray!2,]
-今年的格式变化主要就是三个地方，如下：
-\begin{enumerate}
-\item 论文第一页为承诺书，\textbf{\color{red}内容进行了调整}。
-
-\item 编号页格式进行了格式调整。
-
-\item 这是19年调整了，这里延续说明下。论文正文（\textbf{\color{red}不要目录}，尽量控制在20页以内）；正文之后是论文附录（页数不限）。
-
-\end{enumerate}
-
-\end{mdframed}
-
-
-\url{https://www.latexstudio.net} 陆续推出了更优质的资源，欢迎学习 。
-
-欢迎大家到QQ群里沟通交流：91940767/478023327/640633524。我们也开通了问答区交流 \LaTeX{}技术：\url{https://wenda.latexstudio.net}，欢迎大家前来交流，有问题就来这里，与大神零距离。
-
-\uwave{关注我们的微信公众号}：
-
-\centerline{\includegraphics[width=10cm]{gongzhonghao2}}
-
-\keywords{\TeX{}\quad  图片\quad   表格\quad  公式}
+\keywords{全连接网络\quad  最优化\quad   层次分析法 \quad  数据预处理}
 \end{abstract}
 
 %目录  2019 明确不要目录，我觉得这个规定太好了
