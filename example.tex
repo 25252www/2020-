@@ -43,309 +43,77 @@
 
 %\newpage
 
-\section{模板的基本使用}
+\section{背景介绍}
 
-要使用 \LaTeX{} 来完成建模论文，首先要确保正确安装一个 \LaTeX{} 的发行版本。
+众所周知，信息不透明、信息不对称是中小企业融资难的基本原因。与大企业相比，中小企业由于难以提供经审核合格的财务资料和经营记录，在向银行贷款时面临着更高的信贷风险。为了防止信息不对称造成的逆向选择和道德风险，银行往往会实施信贷配给政策，有选择地对有信贷需求的企业进行授信，拒绝不能满足信息要求的借款人的申请。国外大量的经验证据表明，信贷配给的主要对象正是信息不透明的中小企业。严重的信息不对称,使中小企业产生逆向选择和道德风险的问题,商业银行在贷款时处于更加不利的地位,而且在此过程中,商业银行为了尽可能的减少信息不对称,会加大监督执行成本,而且在收集和处理信息方面较之中小企业而言是规模而不经济的,直接增加商业银行对中小企业的贷款成本，商业银行不愿对缺乏相应信息的企业提供信贷支持而产生了“惜贷”的现象。
 
+为了有效缓解金融交易中的信息问题，银行根据不同类型的信息制定了多种贷款技术。美国经济学家Berger等人将其分为四大类：基于财务报表的贷款，抵押担保贷款，信用评分技术，抵押担保贷款。由于中小企业自身的特有属性以及其存在的发展潜力，信用评分技术在中小企业信贷策略的制定中应用极为广泛。这是利用现代数理统计模型和信息技术，对客户的信用记录进行测算和分析，从而做出决策的新技术。它具有成本低、效率高的特点，可以在很大程度上缓解信息问题，从20世纪80年代开始，美国金融机构就开始使用这种技术发放小额贷款。但由于该技术的复杂性，对信息系统和数据积累的要求较高，其应用受到限制。		
+
+考虑到本题可供分析的数据比较单一且常用的信用评分技术较为复杂，为银行提供一个简单有效的信贷策略制定模型显得尤为重要，因此我们借鉴了信用评分技术的核心思想，充分挖掘票据信息等已有数据中的关系，致力于让银行以较低的贷款成本完成对中小微企业信贷策略的制定。
+
+
+\section{问题重述}
+
+在实际中，由于中小微企业规模相对较小，也缺少抵押资产，因此银行通常是依据信贷政策、企业的交易票据信息和上下游企业的影响力，向实力强、供求关系稳定的企业提供贷款，并可以对信誉高、信贷风险小的企业给予利率优惠。银行首先根据中小微企业的实力、信誉对其信贷风险做出评估，然后依据信贷风险等因素来确定[1]是否放贷及贷款额度、[2]利率和[3]期限 等信贷策略。
+
+某银行对确定要放贷企业的贷款额度为10~100万元；年利率为4\%~15\%；贷款期限为1年。已经给出了123家有信贷记录企业的相关数据、302家无信贷记录企业的相关数据和贷款利率与客户流失率关系的2019年统计数据。该银行希望根据实际和已给的数据信息，通过建立数学模型研究对中小微企业的信贷策略，主要解决下列问题：
 \begin{itemize}
-    \item Mac 下可以使用 Mac\TeX{}
-    \item Linux 下可以使用 \TeX{}Live ；
-    \item windows 下可以使用 \TeX{}Live 或者 Mik\TeX{} ;
+    \item 123家有信贷记录企业的信贷风险进行量化分析，给出该银行在年度信贷总额固定时对这些企业的信贷策略。
+    \item 在问题1的基础上，对302家302家无信贷记录企业的信贷风险进行量化分析，并给出该银行在年度信贷总额为1亿元时对这些企业的信贷策略。
+    \item 企业的生产经营和经济效益可能会受到一些突发因素影响，而且突发因素往往对不同行业、不同类别的企业会有不同的影响。综合各企业的信贷风险和可能的突发因素（例如：新冠病毒疫情）对各企业的影响，给出该银行在年度信贷总额为1亿元时的信贷调整策略。
 \end{itemize}
 
-具体安装可以参考 \href{https://github.com/OsbertWang/install_latex/releases/download/v4.6/Install-LaTeX.pdf}{Install-LaTeX.pdf} 或者其它靠谱的文章。另外可以安装一个易用的编辑器，例如 \href{https://github.com/texstudio-org/texstudio/releases/download/2.12.16/texstudio-2.12.16-win-qt5.exe}{\TeX{}studio} 。
+\section{问题分析}
+\subsection{问题1的分析}
+问题一首先需要我们对123家有信贷记录企业的信贷风险进行量化分析。由于信贷风险主要集中在中小微企业可能发生的违约上，所以对信贷风险的量化分析实际上可以转化为对企业违约率的分析上。由于附件一已经给出了123家有信贷记录企业是否违约的数据，因此我们考虑抽取出进项发票信息和销项发票信息等数据特征，并结合是否违约的标签训练一个二分类器，从而预测企业的违约率。由于原始数据分布不均匀，数值差异化很大，因此需要完善有效的数据预处理方案。考虑到输入数据的可解释性差，所以基于线性模型人工建模的方案可能不太适用，为了充分挖掘输入数据中的隐藏信息，我们选择了全连接神经网络。
 
-使用该模板前，请阅读模板的使用说明文档。下面给出模板使用的大概样式。
+问题一其次需要我们对这些企业制定在年度信贷总额固定时的信贷策略。由于题目已经确定贷款期限为1年，所以我们不必考虑信贷策略中的贷款期限因素，后续我们的银行收益计算也是以一年为限度。我们将会给出的信贷策略包含两个方面：贷款额度、年利率。根据题目信息和生活经验，贷款风险低信誉评级高的企业应该分配更大的信贷额度，并为其贷款年利率给予一定的优惠。考虑到了信誉评级为D的企业不予贷款，因此我们需要对剩下的企业按照他们的预测违约率对银行的贷款总额进行划分，满足违约率低的企业将会得到更多的贷款额度。然后在每家企业贷款额度确定的情况下寻找最优的年利率，这可以转换成关于年利率的最优化问题，最优化目标是企业的年收益最大和客户流失率最小，并且我们仅考虑影响年收益和客户流失率的众多影响因素中的年利率设置因素。求得每一个企业的贷款额度和年利率即为最终的贷款策略。
+\subsection{问题2的分析}
+问题二相较于问题一的差别主要是给出的302家企业没有贷款记录，并且信贷总额被限制在1亿元，基本思路和问题一保持一致。首先运用问题一中的数据预处理方式得到模型的输入特征矩阵和对应的标签，喂入全连接网络模型后得到每一个企业的预测违约率。与问题一不同的是，这302家企业的信誉评级数据缺失，所以我们先要根据附件一中的信誉等级与违约率的关系建立模型，然后对这302家企业的信誉评级进行补全，最后按照与问题一相同的方法确定每一个企业的贷款额度和年利率即为最终的贷款策略。
+\subsection{问题3的分析}
+首先补充说明我们后续会用到的对企业实力的量化分析方案，我们考虑进项和销项发票信息中价税合计的统计量（最大值，均值，和），企业信贷风险以及企业是否处于社会热门行业共7个因素，并建立层次分析法模型得到302家企业的量化实力权重向量，向量值越大的企业代表相对实力越强。
 
-\begin{tcode}
-    \documentclass{cumcmthesis}
-    %\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页
+问题三要求对突发因素下的信贷策略进行调整，使模型更加接近于真实情况，实际上只需对之前模型的预测违约率进行人工微调即可。我们可以首先根据突发因素的影响行业确定违约率的修正方向，不同类型的企业修正方向是不同的，如疫情的爆发等对医疗有关企业有促进作用，而对食品有关企业有抑制作用；然后根据企业实力和突发因素的剧烈程度确定违约率的修正范围，一般来说，规模大(综合实力强)的企业受突发因素的影响较小，规模小（综合实力弱）的企业受突发因素的影响较大，另外如果突发因素客观上非常剧烈，对社会影响很大，那么对应的违约率的修正范围也会相应的增大。最后使用微调过的预测违约率按照与问题二相同的方法确定最终的信贷策略。
 
-    \title{论文题目}
-    \tihao{A}            % 题号
-    \baominghao{4321}    % 报名号
-    \schoolname{你的大学}
-    \membera{成员A}
-    \memberb{成员B}
-    \memberc{成员C}
-    \supervisor{指导老师}
-    \yearinput{2017}     % 年
-    \monthinput{08}      % 月
-    \dayinput{22}        % 日
 
-    \begin{document}
-        \maketitle
-        \begin{abstract}
-            摘要的具体内容。
-            \keywords{关键词1\quad  关键词2\quad   关键词3}
-        \end{abstract}
-        \tableofcontents
-        \section{问题重述}
-        \subsection{问题的提出}
-        \section{模型的假设}
-        \section{符号说明}
-        \begin{center}
-            \begin{tabular}{cc}
-                \hline
-                \makebox[0.3\textwidth][c]{符号}	&  \makebox[0.4\textwidth][c]{意义} \\ \hline
-                D	    & 木条宽度（cm） \\ \hline
-            \end{tabular}
-        \end{center}
-        \section{问题分析}
-        \section{总结}
-        \begin{thebibliography}{9}%宽度9
-            \bibitem{bib:one} ....
-        \end{thebibliography}
-        \begin{appendices}
-            附录的内容。
-        \end{appendices}
-    \end{document}
-\end{tcode}
+\section{模型假设以及符号说明}
+\subsection{模型假设}
+\begin{itemize}
+    \item 假设附件一和附件二的数据分布相同，以便我们根据使用附件一训练的模型有效预测附件二的企业的违约率。
+    \item 假设银行给与中小微企业的信贷额度都能被企业完全使用，以便我们计算信贷策略确定时的银行年收益。
+    \item 假设客户流失率仅仅与银行的年利率设置有关，不考虑更多因素的影响
+\end{itemize}
+\subsection{变量及常量符号说明}
 
-根据要求，电子版论文提交时需去掉封面和编号页。可以加上 \verb|withoutpreface|  选项来实现，即：
-\begin{tcode}
-    \documentclass[withoutpreface]{cumcmthesis}
-\end{tcode}
-这样就能实现了。打印的时候有超链接的地方不需要彩色，可以加上 \verb|bwprint| 选项。
-
-另外目录也是不需要的，将 \verb|\tableofcontents| 注释或删除，目录就不会出现了。
-
-团队的信息填入指定的位置，并且确保信息的正确性，以免因此白忙一场。
-
-编译记得使用 \verb|xelatex|，而不是用 \verb|pdflatex|。在命令行编译的可以按如下方式编译：
-\begin{tcode}
-	xelatex example
-\end{tcode}
-或者使用 \verb|latexmk| 来编译，更推荐这种方式。
-\begin{tcode}
-	latexmk -xelatex example
-\end{tcode}
-
-下面给出写作与排版上的一些建议。
-
-\section{图片}
-
-建模中不可避免要插入图片。图片可以分为矢量图与位图。位图推荐使用 \verb|jpg,png| 这两种格式，避免使用 \verb|bmp| 这类图片，容易出现图片插入失败这样情况的发生。矢量图一般有 \verb|pdf,eps| ，推荐使用 \verb|pdf|  格式的图片，尽量不要使用 \verb|eps| 图片，理由相同。
-
-注意图片的命名，避免使用中文来命名图片，可以用英文与数字的组合来命名图片。避免使用\verb|1,2,3| 这样顺序的图片命名方式。图片多了，自己都不清楚那张图是什么了，命名尽量让它有意义。下面是一个插图的示例代码。
-\begin{figure}[!h]
+\begin{table}[H] 
+    
+    \label{tablesymbol}
     \centering
-    \includegraphics[width=.6\textwidth]{smokeblk}
-    \caption{电路图}
-    \label{fig:circuit-diagram}
-\end{figure}
+    \begin{tabular}{c|c}   
+    \hline
+    变量或常量符号 & 变量或常量符号解释 \\
+    \hline 
+    $P_i$ & 企业i的违约率 \\
+    $Q_i$ & 企业i的信誉评级，可选取值为A，B，C，D \\
+    $\beta_k$ & 信用评级为k的企业的基准年利率 \\
+    $\rho_i$ & 企业i的年利率    \\
+    $M_i$ & 企业i的信贷额度 \\
+    $\theta_i$ & 企业i的实力权重 \\
+    $N$ & 银行每年平摊在每笔贷款上的固定成本 \\
+    $K$ & 银行的信贷总额 \\
+    $W$ & 银行从借贷中获得的总收益 \\
+    $\alpha$ & 突发因素对违约率的基准影响程度 \\
 
-注意 \verb|figure| 环境是一个浮动体环境，图片的最终位置可能会跑动。\verb|[!h]| 中的 \verb|h| 是 here 的意思， \verb|!| 表示忽略一些浮动体的严格规则。另外里面还可以加上 \verb|btp| 选项，它们分别是 bottom, top, page 的意思。只要这几个参数在花括号里面，作用是不分先后顺序的。page 在这里表示浮动页。
 
-\verb|\label{fig:circuit-diagram}| 是一个标签，供交叉引用使用的。例如引用图片 \verb|\cref{fig:circuit-diagram}| 的实际效果是\cref{fig:circuit-diagram}。图片是自动编号的，比起手动编号，它更加高效。\verb|\cref{label}| 由 \verb|cleveref| 宏包提供，比普通的 \verb|\ref{label}| 更加自动化。 \verb|label| 要确保唯一，命名方式推荐用图片的命名方式。
 
-图片并排的需求解决方式多种多样，下面用 \verb|minipage| 环境来展示一个简单的例子。注意，以下例子用到了 \verb|subcaption| 命令，需要加载 subcaption 宏包。
-
-\begin{figure}
-    \centering
-    \begin{minipage}[c]{0.3\textwidth}
-        \centering
-        \includegraphics[width=0.95\textwidth]{f1}
-        \subcaption{流程图}
-        \label{fig:sample-figure-a}
-    \end{minipage}
-    \begin{minipage}[c]{0.3\textwidth}
-        \centering
-        \includegraphics[width=0.95\textwidth]{f1}
-        \subcaption{流程图}
-        \label{fig:sample-figure-b}
-    \end{minipage}
-    \begin{minipage}[c]{0.3\textwidth}
-        \centering
-        \includegraphics[width=0.95\textwidth]{f1}
-        \subcaption{流程图}
-        \label{fig:sample-figure-c}
-    \end{minipage}
-    \caption{多图并排示例}
-    \label{fig:sample-figure}
-\end{figure}
-这相当于整体是一张大图片，大图片引用是\cref{fig:sample-figure}，子图引用别分是\cref{fig:sample-figure-a}、\cref{fig:sample-figure-b}、\cref{fig:sample-figure-c}。
-
-如果原本两张图片的高度不同，但是希望它们缩放后等高的排在同一行，参考这个例子：
-\begin{figure}
-    \centering
-    \begin{minipage}[c]{0.48\textwidth}
-        \centering
-        \includegraphics[height=0.2\textheight]{cat}
-        \subcaption{一只猫}
-    \end{minipage}
-    \begin{minipage}[c]{0.48\textwidth}
-        \centering
-        \includegraphics[height=0.2\textheight]{smokeblk}
-        \subcaption{电路图}
-    \end{minipage}
-    \caption{多图并排示例}
-\end{figure}
-
-\section{绘制普通三线表格}
-表格应具有三线表格式，因此常用 booktabs宏包，其标准格式如\cref{tab:001}~所示。
-\begin{table}[!htbp]
-    \caption{标准三线表格}\label{tab:001} \centering
-    \begin{tabular}{ccccc}
-        \toprule[1.5pt]
-        $D$(in) & $P_u$(lbs) & $u_u$(in) & $\beta$ & $G_f$(psi.in)\\
-        \midrule[1pt]
-        5 & 269.8 & 0.000674 & 1.79 & 0.04089\\
-        10 & 421.0 & 0.001035 & 3.59 & 0.04089\\
-        20 & 640.2 & 0.001565 & 7.18 & 0.04089\\
-        \bottomrule[1.5pt]
     \end{tabular}
-\end{table}
-
-其绘制表格的代码及其说明如下。
-\begin{tcode}
-    \begin{table}[!htbp]
-        \caption[标签名]{中文标题}
-        \begin{tabular}{cc...c}
-            \toprule[1.5pt]
-            表头第1个格   & 表头第2个格   & ... & 表头第n个格  \\
-            \midrule[1pt]
-            表中数据(1,1) & 表中数据(1,2) & ... & 表中数据(1,n)\\
-            表中数据(2,1) & 表中数据(2,2) & ... & 表中数据(2,n)\\
-            ...................................................\\
-            表中数据(m,1) & 表中数据(m,2) & ... & 表中数据(m,n)\\
-            \bottomrule[1.5pt]
-        \end{tabular}
+    \caption{文中出现变量与常量符号及其解释}
     \end{table}
-\end{tcode}
+\section{模型的建立与求解}
+\subsection{问题一数据预处理}
+数据预处理的目标是从附件一抽取出进项发票信息和销项发票信息中的数据特征，构造数量足够的特征矩阵，并为每一个矩阵贴上是否违约的标签，作为输入数据训练一个二分类器。对于附件二没有信贷记录的企业的数据预处理只需提取特征矩阵即可。
 
-\bigskip
-
-table环境是一个将表格嵌入文本的浮动环境。tabular环境的必选参数由每列对应一个格式字符所组成：c表示居中，l表示左对齐，r表示右对齐，其总个数应与表的列数相同。此外，\verb|@{文本}|可以出现在任意两个上述的列格式之间，其中的文本将被插入每一行的同一位置。表格的各行以\verb|\\|分隔，同一行的各列则以\&分隔。 \verb|\toprule| 、\verb|\midrule| 和 \verb|\bottomrule| 三个命令是由booktabs宏包提供的，其中 \verb|\toprule| 和 \verb|\bottomrule| 分别用来绘制表格的第一条（表格最顶部）和第三条（表格最底部）水平线， \verb|\midrule| 用来绘制第二条（表头之下）水平线，且第一条和第三条水平线的线宽为 1.5pt ，第二条水平线的线宽为 1pt 。引用方法与图片的相同。
-
-\section{公式}
-
-数学建模必然涉及不少数学公式的使用。下面简单介绍一个可能用得上的数学环境。
-
-首先是行内公式，例如 $ \theta $ 是角度。行内公式使用 \verb|$  $| 包裹。
-
-行间公式不需要编号的可以使用 \verb|\[  \]| 包裹，例如
-\[
-E=mc^2
-\]
-其中 $ E $ 是能量，$ m $ 是质量，$ c $ 是光速。
-
-如果希望某个公式带编号，并且在后文中引用可以参考下面的写法：
-\begin{equation}
-E=mc^2
-\label{eq:energy}
-\end{equation}
-式\cref{eq:energy}是质能方程。
-
-多行公式有时候希望能够在特定的位置对齐，以下是其中一种处理方法。
-\begin{align}
-P & = UI \\
-& = I^2R
-\end{align}
-\verb|&| 是对齐的位置， \verb|&| 可以有多个，但是每行的个数要相同。
-
-矩阵的输入也不难。
-\[
-\mathbf{X} = \left(
-    \begin{array}{cccc}
-    x_{11} & x_{12} & \ldots & x_{1n}\\
-    x_{21} & x_{22} & \ldots & x_{2n}\\
-    \vdots & \vdots & \ddots & \vdots\\
-    x_{n1} & x_{n2} & \ldots & x_{nn}\\
-    \end{array} \right)
-\]
-
-分段函数这些可以用 \verb|case| 环境，但是它要放在数学环境里面。
-\[
-f(x) =
-    \begin{cases}
-        0 &  x \text{为无理数} ,\\
-        1 &  x \text{为有理数} .
-    \end{cases}
-\]
-在数学环境里面，字体用的是数学字体，一般与正文字体不同。假如要公式里面有个别文字，则需要把这部分放在 \verb|text| 环境里面，即 \verb|\text{文本环境}| 。
-
-公式中个别需要加粗的字母可以用 \verb|$\bm{math symbol}$| 。如 $ \alpha a\bm{\alpha a} $ 。
-
-以上仅简单介绍了基础的使用，对于更复杂的需求，可以阅读相关的宏包手册，如 \href{http://texdoc.net/texmf-dist/doc/latex/amsmath/amsldoc.pdf}{amsmath}。
-
-希腊字母这些如果不熟悉，可以去查找符号文件 \href{http://mirrors.ctan.org/info/symbols/comprehensive/symbols-a4.pdf}{symbols-a4.pdf} ，也可以去 \href{http://detexify.kirelabs.org/classify.html}{detexify} 网站手写识别。另外还有数学公式识别软件 \href{https://mathpix.com/}{mathpix} 。
-
-下面简单介绍一下定理、证明等环境的使用。
-\begin{definition}
-    定义环境
-    \label{def:nosense}
-\end{definition}
-\cref{def:nosense}除了告诉你怎么使用这个环境以外，没有什么其它的意义。
-
-除了 definition 环境，还可以使用 theorem 、lemma、corollary、assumption、conjecture、axiom、principle、problem、example、proof、solution 这些环境，根据论文的实际需求合理使用。
-
-\begin{theorem}
-    这是一个定理。
-    \label{thm:example}
-\end{theorem}
-由\cref{thm:example}我们知道了定理环境的使用。
-
-\begin{lemma}
-    这是一个引理。
-    \label{lem:example}
-\end{lemma}
-由\cref{lem:example}我们知道了引理环境的使用。
-
-\begin{corollary}
-    这是一个推论。
-    \label{cor:example}
-\end{corollary}
-由\cref{cor:example}我们知道了推论环境的使用。
-
-\begin{assumption}
-    这是一个假设。
-    \label{asu:example}
-\end{assumption}
-由\cref{asu:example}我们知道了假设环境的使用。
-
-\begin{conjecture}
-    这是一个猜想。
-    \label{con:example}
-\end{conjecture}
-由\cref{con:example}我们知道了猜想环境的使用。
-
-\begin{axiom}
-    这是一个公理。
-    \label{axi:example}
-\end{axiom}
-由\cref{axi:example}我们知道了公理环境的使用。
-
-\begin{principle}
-    这是一个定律。
-    \label{pri:example}
-\end{principle}
-由\cref{pri:example}我们知道了定律环境的使用。
-
-\begin{problem}
-    这是一个问题。
-    \label{pro:example}
-\end{problem}
-由\cref{pro:example}我们知道了问题环境的使用。
-
-\begin{example}
-    这是一个例子。
-    \label{exa:example}
-\end{example}
-由\cref{exa:example}我们知道了例子环境的使用。
-
-\begin{proof}
-    这是一个证明。
-    \label{prf:example}
-\end{proof}
-由\cref{prf:example}我们知道了证明环境的使用。
-
-\begin{solution}
-    这是一个解。
-    \label{sol:example}
-\end{solution}
-由\cref{sol:example}我们知道了解环境的使用。
-
+我们面临的挑战包括：数据分布不均衡，即附件一中没有违约的企业数量远远大于有违约记录的企业数量；数值差异巨大，对于金额，税额，价税合计的取值差异很大，以至于均值归一化后计算机无法表示（只能表示为NaN）。对此我们运用了重采样和正态归一化的方法。
 
 
 \section{其它小功能}
