@@ -216,14 +216,14 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
 
 然后按照企业的预测违约率进行微调，微调的原则是信誉等级为C的不调整，信誉等级为A，B的企业按照式\ref{lilv}微调：
 \begin{equation}
-    \rho_i \gets \rho_i - (1 - \rho_i) \cdot \rho_\triangle
+    \rho_i \gets \rho_i - (1 - P_i) \cdot \rho_\triangle
     \label{lilv}
 \end{equation}
 
-其中$P_i$为预测的违约率，$\rho_\triangle$为查阅资料设定的先验值，参考值为0.004，另外要注意如果年利率不满足4\%~15\%则需要进行截断。第三问我门会具体使用这个模型，并将每个企业的信贷额度和年利率保存在附件一中。
+其中$P_i$为预测的违约率，$\rho_\triangle$为查阅资料设定的先验值，参考值为0.01，另外要注意如果年利率不满足4\% \textasciitilde 15\%则需要进行截断。第二问我们会具体使用这个模型，并将每个企业的信贷额度和年利率保存在附件二中。
 
 \subsection{问题二模型建立与求解}
-问题二相较于问题一的差别主要是给出的302家企业没有贷款记录，并且信贷总额被设置为1亿元，基本思路和问题一保持一致。首先运用问题一中的数据预处理方式得到模型的输入特征矩阵和对应的标签，喂入全连接网络模型后得到每一个企业的预测违约率。与问题一不同的是，这302家企业的信誉评级数据缺失。
+问题二相较于问题一的差别主要是给出的302家企业没有贷款记录，并且信贷总额被设置为1亿元，基本思路和问题一保持一致 。首先运用问题一中的数据预处理方式得到模型的输入特征矩阵和对应的标签，喂入全连接网络模型后得到每一个企业的预测违约率。与问题一不同的是，这302家企业的信誉评级数据缺失。
 
 我们这里介绍一下这302家企业的信誉评级的补全策略。首先提取出附件一中企业的信誉等级与违约率的关系，然后对提取出的表按照违约率排序，然后通过人工观察的方式确定三个合适违约率作为分位点，通过分位点划分即可确定企业的信誉评级，满足违约率越小的企业信誉等级越高。我们对附件二中的302家企业的信誉评级进行了补全并保存在了附件中，这里展示部分结果如下：
 
@@ -248,8 +248,32 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
     \label{figpingji}
 \end{figure}
 
-对这302家企业的信誉评级进行补全后，最后按照与问题一相同的方法确定每一个企业的贷款策略，我们将求得的每个企业的信贷额度和年利率保存在了附件中。
+对这302家企业的信誉评级进行补全后，最后按照与问题一相同的方法确定每一个企业的贷款策略，我们将求得的每个企业的信贷额度和年利率保存在了附件中，
+这里展示部分结果表\ref{table23445}：最后我们对每个企业的信贷额度和年利率画出了如下的散点图，可以分析发现，
 
+\begin{table}[H]
+    \begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+    企业代号 & 信贷额度 & 年利率\\
+    \hline
+    $E124$ & 4850715.237 & 0.05501743\\
+    $E125$ & 5568373.62 & 0.0545\\
+    $E126$ & 1541031.314 & 0.057403703\\
+    $E127$ & 1034629.081 & 0.057768818\\
+    $E128$ & 567867.1643 & 0.058105352\\
+    \vdots & \vdots & \vdots\\
+    $E421$ & 0 & 0\\
+    $E422$ & 0 & 0\\
+    $E423$ & 0 & 0\\
+    $E424$ & 0 & 0\\
+    $E425$ & 0 & 0\\
+    \hline
+    \end{tabular}
+    \end{center}
+    \caption{附件2企业信贷额度以及年利率}
+    \label{table23445}
+    \end{table}
 \subsection{问题三企业实力量化分析}
 我们后续的建模会用到的对企业实力的量化分析，所以这里首先介绍我们的企业实力量化分析方案。我们考虑进项和销项发票信息中价税合计的统计量（最大值，均值，和）以及企业是否处于社会热门行业共7个因素，建立层次分析法模型得到302家企业的量化实力权重向量，向量值越大的企业代表相对实力越强。层次分析法（AHP）是对一些较为复杂、较为模糊的问题作出决策的简易方法，它特别适用于那些难于完全定量分析的问题。它是美国运筹学家T. L. Saaty 教授于上世纪70 年代初期提出的一种简便、灵活而又实用的多准则决策方法。具体的方案如下。
 
@@ -351,7 +375,7 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
         \label{RIde}
     
     \end{table}
-    RI 的值是这样得到的，用随机方法构造 500 个样本矩阵：随机地从 1~9 及其倒
+    RI 的值是这样得到的，用随机方法构造 500 个样本矩阵：随机地从 1 \textasciitilde 9 及其倒
 数中抽取数字构造正互反矩阵，求得最大特征根的平均值$\lambda^{'}_{max}$ ，并定义$RI = \frac{\lambda^{'}_{max}-n}{n-1}$。
     \item 计算一致性比例$CR = \frac{CI}{RI}$。
     
@@ -393,7 +417,7 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
     \label{equation7x7}
 \end{equation}
 
-通过措施层的302x302判断矩阵分别求得所有企业对每个因素的权重向量，进而按照表\ref{cenci}，
+通过措施层的302x302判断矩阵分别求得所有企业对每个因素的权重向量，进而按照表\ref{tablecenci}，
 所示方式求得302家企业对上一层7个因素的总目标的权重，该权重的值即可视为企业的实力$\theta_i$，权重值越大代表企业实力越强。所有企业的实力权重保存在了附件中，以下为部分取值示例：
 
 \begin{table}[H]
@@ -416,6 +440,8 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
     \hline
     \end{tabular}
     \end{center}
+    \caption{附件2企业实例权重}
+    \label{tablecenci}
     \end{table}
 
 对层次总排序也需作一致性检验，检验仍象层次总排序那样由高层到低层逐层进行。这是因为虽然各层次均已经过层次单排序的一致性检验，各成对比较判断矩阵都已具有较为满意的一致性。但当综合考察时，各层次的非一致性仍有可能积累起来，引起最终分析结果较严重的非一致性。
@@ -490,51 +516,16 @@ $\beta_A$=0.0585，$\beta_B$=0.0625，$\beta_C$=0.0665，可以观察到满足�
 
 %参考文献
 \begin{thebibliography}{9}%宽度9
-    \bibitem[1]{liuhaiyang2013latex}
-    刘海洋.
-    \newblock \LaTeX {}入门\allowbreak[J].
-    \newblock 电子工业出版社, 北京, 2013.
-    \bibitem[2]{mathematical-modeling}
-    全国大学生数学建模竞赛论文格式规范 (2020 年 8 月 25 日修改).
-    \bibitem{3} \url{https://www.latexstudio.net}
+    \bibitem[1]杨伟歧，商业银行中小企业信贷策略研究,山东大学硕士学位论文，2011-10
+    \bibitem[2]Berger, A.N. and Udell, G.F., 1995.Relationship Lending and Lines of Credit in Small Firm Finance[j]. Journal of Business,(68):351-381
+    \bibitem[3]Rectified Linear Units Improve Restricted Boltzmann Machines Vinod Nair.ResearchGate
+    \bibitem[4]王文元，夏伯忠．新编会计大辞典：辽宁人民出版社，1991－01
 \end{thebibliography}
 
 \newpage
 %附录
 \begin{appendices}
 
-\section{模板所用的宏包}
-\begin{table}[htbp]
-    \centering
-    \caption{宏包罗列}
-    \begin{tabular}{ccccc}
-        \toprule
-        \multicolumn{5}{c}{模板中已经加载的宏包} \\
-        \midrule
-        amsbsy & amsfonts & {amsgen} & {amsmath} & {amsopn} \\
-        amssymb & amstext & {appendix} & {array} & {atbegshi} \\
-        atveryend & auxhook & {bigdelim} & {bigintcalc} & {bigstrut} \\
-        bitset & bm    & {booktabs} & {calc} & {caption} \\
-        caption3 & CJKfntef & {cprotect} & {ctex} & {ctexhook} \\
-        ctexpatch & enumitem & {etexcmds} & {etoolbox} & {everysel} \\
-        expl3 & fix-cm & {fontenc} & {fontspec} & {fontspec-xetex} \\
-        geometry & gettitlestring & {graphics} & {graphicx} & {hobsub} \\
-        hobsub-generic & hobsub-hyperref & {hopatch} & {hxetex} & {hycolor} \\
-        hyperref & ifluatex & {ifpdf} & {ifthen} & {ifvtex} \\
-        ifxetex & indentfirst & {infwarerr} & {intcalc} & {keyval} \\
-        kvdefinekeys & kvoptions & {kvsetkeys} & {l3keys2e} & {letltxmacro} \\
-        listings & longtable & {lstmisc} & {ltcaption} & {ltxcmds} \\
-        multirow & nameref & {pdfescape} & {pdftexcmds} & {refcount} \\
-        rerunfilecheck & stringenc & {suffix} & {titletoc} & {tocloft} \\
-        trig  & ulem  & {uniquecounter} & {url} & {xcolor} \\
-        xcolor-patch & xeCJK & {xeCJKfntef} & {xeCJK-listings} & {xparse} \\
-        xtemplate & zhnumber &       &       &  \\
-        \bottomrule
-    \end{tabular}%
-    \label{tab:addlabel}%
-\end{table}%
-
-以上宏包都已经加载过了，不要重复加载它们。
 
 \section{排队算法--matlab 源程序}
 
